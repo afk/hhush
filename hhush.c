@@ -26,7 +26,7 @@ char *extractCMD(char *cmd, char *input) {
     int i;
     
     i = 0;
-    while (!isspace(*(input + i))) i++;
+    while (!isspace(*(input + i)) && *(input + i) != 0) i++;
     
     *(cmd + i) = 0;
     
@@ -71,6 +71,9 @@ int main() {
         } else if (strcmp(cmd, "echo") == 0) {
             puts(input);
         } else if (strcmp(cmd, "exit") == 0) {
+            fclose(stdin);
+            fclose(stdout);
+            fclose(stderr);
             exit(0);
         } else {
             if (strlen(cmd) != 0)
