@@ -40,16 +40,50 @@ char *extractCommand(char *cmd, char *input) {
     return input;
 }
 
+char *dateCMD(char *input) {
+    char *time_string = (char*) malloc(sizeof(char) * 30);
+    
+    if (strlen(input) == 0) {
+        time_t rawtime;
+        struct tm *timeinfo;
+        
+        time(&rawtime);
+        timeinfo = localtime(&rawtime);
+        
+        //if (strftime(time_string, sizeof(time_string), "%c", timeinfo) != 0)
+        strftime(time_string, 30, "%c", timeinfo);
+    } else {
+        strcpy(time_string, "invalid arguments");
+    }
+    
+    return time_string;
+}
+
+char *lsCMD() {
+    char *ls_string = NULL;
+    
+    DIR *dirp = opendir(".");
+    struct dirent *file;
+    
+    while((file = readdir(dirp))!= NULL) {
+        if(file->d_name[0] == 46)
+            continue;
+        ls_string = (char*) realloc(ls_string, sizeof(file->d_name));
+        strcat(ls_string, file->d_name);
+        strcat(ls_string, "\n");
+    }
+    
+    closedir(dirp);
+    
+    return ls_string;
+}
+
 int main() {
     char raw_input[256];
     char *input;
     char cmd[256];
     
     char cwd[1024];
-    
-    time_t rawtime;
-    struct tm *timeinfo;
-    char time_string[80];
     
     if (getcwd(cwd, sizeof(cwd)) != NULL)
         printf("%s $ ", cwd);
@@ -59,37 +93,23 @@ int main() {
         input = trimWS(raw_input);
         input = extractCommand(cmd, input);
         
-        if (strcmp(cmd, "date") == 0) {
-            if (strlen(input) == 0) {
-                time(&rawtime);
-                timeinfo = localtime(&rawtime);
-                
-                if (strftime(time_string, sizeof(time_string), "%c", timeinfo) != 0)
-                    puts(time_string);
-            } else {
-                puts("invalid arguments");
-            }
-        } else if (strcmp(cmd, "echo") == 0) {
+        if (!strcmp(cmd, "date")) {
+            char *date_string = dateCMD(input);
+            puts(date_string);
+            free(date_string);
+        } else if (!strcmp(cmd, "echo")) {
             puts(input);
-        } else if (strcmp(cmd, "ls") == 0) {
-            DIR *dirp = opendir(".");
-            
-            struct dirent *file;
-            
-            while((file = readdir(dirp))!= NULL) {
-                if(file->d_name[0] == 46)
-                    continue;
-                puts(file->d_name);
-            }
-            
-            closedir(dirp);
-        } else if (strcmp(cmd, "exit") == 0) {
+        } else if (!strcmp(cmd, "ls")) {
+            char *ls_string = lsCMD();
+            printf("%s", ls_string);
+            free(ls_string);
+        } else if (!strcmp(cmd, "exit")) {
             fclose(stdin);
             fclose(stdout);
             fclose(stderr);
             exit(0);
         } else {
-            if (strlen(cmd) != 0)
+            if (strlen(cmd))
                 puts("command not found");
         }
         
