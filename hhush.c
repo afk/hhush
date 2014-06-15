@@ -92,7 +92,7 @@ char *grepCMD(char *input) {
     char *pattern = strtok(input, " ");
     char *file = strtok(NULL, " ");
     
-    if (strlen(input) && pattern && file) {
+    if (strlen(input) && pattern && file && !strtok(NULL, " ")) {
         FILE *filep = fopen(file, "r");
         
         if (filep == NULL) {
