@@ -43,7 +43,7 @@ char *extractCommand(char *cmd, char *input) {
 char *dateCMD(char *input) {
     char *time_string = (char*) malloc(sizeof(char) * 30);
     
-    if (strlen(input) == 0) {
+    if (!strlen(input)) {
         time_t rawtime;
         struct tm *timeinfo;
         
@@ -67,8 +67,8 @@ char *lsCMD(char *input) {
         DIR *dirp = opendir(".");
         struct dirent *file;
         
-        while((file = readdir(dirp))!= NULL) {
-            if(file->d_name[0] == 46)
+        while ((file = readdir(dirp))!= NULL) {
+            if (file->d_name[0] == 46)
                 continue;
             
             ls_string = (char*) realloc(ls_string, sizeof(file->d_name));
@@ -83,6 +83,39 @@ char *lsCMD(char *input) {
     }
 
     return ls_string;
+}
+
+char *grepCMD(char *input) {
+    char *grep_string = (char*) malloc(sizeof(char));
+    strcpy(grep_string, "");
+    
+    char *pattern = strtok(input, " ");
+    char *file = strtok(NULL, " ");
+    
+    if (strlen(input) && pattern && file) {
+        FILE *filep = fopen(file, "r");
+        
+        if (filep == NULL) {
+            grep_string = (char*) realloc(grep_string, 26);
+            strcpy(grep_string, "no such file or directory\n");
+        } else {
+            char temp[512];
+            
+            while (fgets(temp, 512, filep)) {
+                if (strstr(temp, pattern)) {
+                    grep_string = (char*) realloc(grep_string, sizeof(temp));
+                    strcat(grep_string, temp);
+                }
+            }
+            
+            fclose(filep);
+        }
+    } else {
+        grep_string = (char*) realloc(grep_string, 19);
+        strcpy(grep_string, "invalid arguments\n");
+    }
+    
+    return grep_string;
 }
 
 int main() {
@@ -112,6 +145,10 @@ int main() {
             free(ls_string);
         } else if (!strcmp(cmd, "cd")) {
             chdir(input);
+        } else if (!strcmp(cmd, "grep")) {
+            char *grep_string = grepCMD(input);
+            printf("%s", grep_string);
+            free(grep_string);
         } else if (!strcmp(cmd, "exit")) {
             fclose(stdin);
             fclose(stdout);
