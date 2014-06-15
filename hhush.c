@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
+#include <dirent.h>
 
 char *trimWS(char *string) {
     char *end;
@@ -70,6 +71,18 @@ int main() {
             }
         } else if (strcmp(cmd, "echo") == 0) {
             puts(input);
+        } else if (strcmp(cmd, "ls") == 0) {
+            DIR *dirp = opendir(".");
+            
+            struct dirent *file;
+            
+            while((file = readdir(dirp))!= NULL) {
+                if(file->d_name[0] == 46)
+                    continue;
+                puts(file->d_name);
+            }
+            
+            closedir(dirp);
         } else if (strcmp(cmd, "exit") == 0) {
             fclose(stdin);
             fclose(stdout);
