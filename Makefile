@@ -7,5 +7,8 @@ all:
 debug:
 	$(CC) $(CFLAGS) -g -Wall -Wextra hhush.c -o hhush
 
+debugmac:
+	$(CC) $(CFLAGS) -Wall -Wextra hhush.c -o hhush
+
 clean:
 	rm hhush
