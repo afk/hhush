@@ -60,7 +60,8 @@ char *dateCMD(char *input) {
 }
 
 char *lsCMD() {
-    char *ls_string = NULL;
+    char *ls_string = (char*) malloc(sizeof(char));
+    strcpy(ls_string, "");
     
     DIR *dirp = opendir(".");
     struct dirent *file;
