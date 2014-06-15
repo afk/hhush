@@ -1,0 +1,49 @@
+sl
+grep 3 4 3
+history
+exit
+cd data
+cd folder1
+ls -a
+cd ..
+cd texte
+sl
+cd ..
+ls -a
+exit
+cd data
+ls
+exit
+cd data
+cd folder1
+ls
+cd ..
+exit
+cd data
+cd texte
+ls
+cd ..
+exit
+cd data
+cd texte
+ls
+cd ..
+exit
+cd data
+ls | grep folder
+exit
+date | grep 2014
+exit
+date | grep sun
+exit
+echo hello world | grep hello
+echo hello world | grep sun
+exit
+cd data
+ls | grep texte
+cd folder1
+ls | grep folder1
+ls | grep folder2
+ls | grep birds
+ls | grep secret
+exit

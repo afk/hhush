@@ -1,0 +1,12 @@
+$HOME $ cd data
+$HOME/data $ cd folder1
+$HOME/data/folder1 $ ls -a
+invalid arguments
+$HOME/data/folder1 $ cd ..
+$HOME/data $ cd texte
+$HOME/data/texte $ sl
+command not found
+$HOME/data/texte $ cd ..
+$HOME/data $ ls -a
+invalid arguments
+$HOME/data $ exit

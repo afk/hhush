@@ -1,0 +1,9 @@
+./hhush
+cd data
+ls | grep texte
+cd folder1
+ls | grep folder1
+ls | grep folder2
+ls | grep birds
+ls | grep secret
+exit

@@ -1,0 +1,4 @@
+./hhush
+echo hello world | grep hello
+echo hello world | grep sun
+exit

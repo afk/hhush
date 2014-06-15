@@ -1,0 +1,4 @@
+./hhush
+cd data
+ls | grep folder
+exit

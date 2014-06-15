@@ -1,0 +1,4 @@
+./hhush
+history | grep grep
+history | grep sun
+exit

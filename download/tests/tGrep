@@ -1,0 +1,14 @@
+./hhush
+cd data/texte
+grep worry birds
+grep bird dont-worry
+cd ../folder1
+grep sun birds
+grep secret .secret
+cd ..
+grep param1
+grep worry texte/birds
+cd texte
+grep worry birds param3
+cd ..
+exit

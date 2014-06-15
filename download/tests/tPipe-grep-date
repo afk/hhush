@@ -1,0 +1,3 @@
+./hhush
+date | grep 2014
+exit

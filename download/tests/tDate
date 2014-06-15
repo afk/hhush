@@ -1,0 +1,5 @@
+./hhush
+date
+date -a
+exit
+ 

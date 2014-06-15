@@ -1,0 +1,10 @@
+./hhush
+cd data
+cd folder1
+ls -a
+cd ..
+cd texte
+sl
+cd ..
+ls -a
+exit

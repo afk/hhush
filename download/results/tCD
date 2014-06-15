@@ -1,0 +1,7 @@
+$HOME $ cd data
+$HOME/data $ cd texte
+$HOME/data/texte $ cd ../folder1
+$HOME/data/folder1 $ cd ..
+$HOME/data $ cd ..
+$HOME $ cd $HOME/data/folder2
+$HOME/data/folder2 $ exit

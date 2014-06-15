@@ -1,0 +1,5 @@
+$HOME $ cd data
+$HOME/data $ ls | grep folder
+folder1
+folder2
+$HOME/data $ exit

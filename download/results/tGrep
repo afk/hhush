@@ -1,0 +1,21 @@
+$HOME $ cd data/texte
+$HOME/data/texte $ grep worry birds
+Dont worry about a thing
+Dont worry about a thing
+$HOME/data/texte $ grep bird dont-worry
+$HOME/data/texte $ cd ../folder1
+$HOME/data/folder1 $ grep sun birds
+no such file or directory
+$HOME/data/folder1 $ grep secret .secret
+This text is a secret. You are not supposed to read it.
+$HOME/data/folder1 $ cd ..
+$HOME/data $ grep param1
+invalid arguments
+$HOME/data $ grep worry texte/birds
+Dont worry about a thing
+Dont worry about a thing
+$HOME/data $ cd texte
+$HOME/data/texte $ grep worry birds param3
+invalid arguments
+$HOME/data/texte $ cd ..
+$HOME/data $ exit
