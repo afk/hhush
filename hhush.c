@@ -59,23 +59,29 @@ char *dateCMD(char *input) {
     return time_string;
 }
 
-char *lsCMD() {
+char *lsCMD(char *input) {
     char *ls_string = (char*) malloc(sizeof(char));
     strcpy(ls_string, "");
     
-    DIR *dirp = opendir(".");
-    struct dirent *file;
-    
-    while((file = readdir(dirp))!= NULL) {
-        if(file->d_name[0] == 46)
-            continue;
-        ls_string = (char*) realloc(ls_string, sizeof(file->d_name));
-        strcat(ls_string, file->d_name);
-        strcat(ls_string, "\n");
+    if (!strlen(input)) {
+        DIR *dirp = opendir(".");
+        struct dirent *file;
+        
+        while((file = readdir(dirp))!= NULL) {
+            if(file->d_name[0] == 46)
+                continue;
+            
+            ls_string = (char*) realloc(ls_string, sizeof(file->d_name));
+            strcat(ls_string, file->d_name);
+            strcat(ls_string, "\n");
+        }
+        
+        closedir(dirp);
+    } else {
+        ls_string = (char*) realloc(ls_string, 19);
+        strcpy(ls_string, "invalid arguments\n");
     }
-    
-    closedir(dirp);
-    
+
     return ls_string;
 }
 
@@ -101,7 +107,7 @@ int main() {
         } else if (!strcmp(cmd, "echo")) {
             puts(input);
         } else if (!strcmp(cmd, "ls")) {
-            char *ls_string = lsCMD();
+            char *ls_string = lsCMD(input);
             printf("%s", ls_string);
             free(ls_string);
         } else if (!strcmp(cmd, "cd")) {
