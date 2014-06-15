@@ -22,7 +22,7 @@ char *trimWS(char *string) {
     return string;
 }
 
-char *extractCMD(char *cmd, char *input) {
+char *extractCommand(char *cmd, char *input) {
     memcpy(cmd, input, strlen(input)+1);
     int i;
     
@@ -57,7 +57,7 @@ int main() {
     while (1) {
         fgets(raw_input, sizeof(raw_input), stdin);
         input = trimWS(raw_input);
-        input = extractCMD(cmd, input);
+        input = extractCommand(cmd, input);
         
         if (strcmp(cmd, "date") == 0) {
             if (strlen(input) == 0) {
