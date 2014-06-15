@@ -1,7 +1,0 @@
-$HOME $ cd data
-$HOME/data $ cd texte
-$HOME/data/texte $ ls
-dont-worry
-birds
-$HOME/data/texte $ cd ..
-$HOME/data $ exit

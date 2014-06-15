@@ -1,4 +1,0 @@
-$HOME $ echo hello world | grep hello
-hello world 
-$HOME $ echo hello world | grep sun
-$HOME $ exit

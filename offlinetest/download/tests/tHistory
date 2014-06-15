@@ -1,8 +1,0 @@
-./hhush
-history -c
-sl
-grep 3 4 3
-history
-history -a
-history 3
-exit

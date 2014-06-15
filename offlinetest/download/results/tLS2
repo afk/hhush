@@ -1,7 +1,0 @@
-$HOME $ cd data
-$HOME/data $ cd folder1
-$HOME/data/folder1 $ ls
-three-little-birds
-folder1
-$HOME/data/folder1 $ cd ..
-$HOME/data $ exit

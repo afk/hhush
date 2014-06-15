@@ -1,6 +1,0 @@
-./hhush
-cd data
-cd folder1
-ls
-cd ..
-exit
