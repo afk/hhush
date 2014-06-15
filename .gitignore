@@ -2,13 +2,6 @@
 
 ### Project-specific ###
 hhush
-.hhush.hist*
-data
-output
-results
-scripts
-tests
-!download/*
 
 ### C ###
 # Object files

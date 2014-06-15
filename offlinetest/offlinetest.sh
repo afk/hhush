@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export PATH=/usr/local/bin:$PATH
-
 clear;
 
 #set -e
@@ -38,8 +36,8 @@ echo ""
 echo "################################################################"
 
 echo ""
-echo "Errors:"
-if gcc -w -std=c99 hhush.c -o hhush; then
+echo "Warnings/Errors:"
+if gcc -Wall -Wextra -std=c99 hhush.c -o hhush; then
 echo ""
 echo "Successful."
 echo ""
