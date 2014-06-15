@@ -96,7 +96,7 @@ char *grepCMD(char *input) {
         FILE *filep = fopen(file, "r");
         
         if (filep == NULL) {
-            grep_string = (char*) realloc(grep_string, 26);
+            grep_string = (char*) realloc(grep_string, 27);
             strcpy(grep_string, "no such file or directory\n");
         } else {
             char temp[512];
