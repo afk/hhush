@@ -104,6 +104,8 @@ int main() {
             char *ls_string = lsCMD();
             printf("%s", ls_string);
             free(ls_string);
+        } else if (!strcmp(cmd, "cd")) {
+            chdir(input);
         } else if (!strcmp(cmd, "exit")) {
             fclose(stdin);
             fclose(stdout);
