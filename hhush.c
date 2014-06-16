@@ -146,15 +146,22 @@ char *setOutput(char *string, int free_flag) {
 }
 
 void parseInput(char *raw_input, char *pipe_input) {
-    char *input;
+    char *input = trimWS(raw_input);
     char *output = NULL;
     char cmd[256];
+    char *pipe;
+    int prepare_pipe = 0;
     
-    input = trimWS(raw_input);
     input = extractCommand(cmd, input);
     
+    if ((pipe = strstr(input, "|"))) {
+        prepare_pipe = 1;
+        *pipe = 0;
+    }
+    input = trimWS(input);
+    
     if (!strcmp(cmd, "date")) {
-        if (strlen(input) && input[0] != 124) {
+        if (strlen(input) && !prepare_pipe) {
             output = setOutput("invalid arguments\n", 0);
         } else {
             output = setOutput(dateCMD(), 1);
@@ -162,7 +169,7 @@ void parseInput(char *raw_input, char *pipe_input) {
     } else if (!strcmp(cmd, "echo")) {
         output = setOutput(strcat(input, "\n"), 0);
     } else if (!strcmp(cmd, "ls")) {
-        if (strlen(input) && input[0] != 124) {
+        if (strlen(input) && !prepare_pipe) {
             output = setOutput("invalid arguments\n", 0);
         } else {
             output = setOutput(lsCMD(), 1);
@@ -181,8 +188,8 @@ void parseInput(char *raw_input, char *pipe_input) {
             puts("command not found");
     }
     
-    if (input[0] == 124) {
-        parseInput(++input, output);
+    if (prepare_pipe) {
+        parseInput(++pipe, output);
     } else {
         printf("%s", output);
     }
