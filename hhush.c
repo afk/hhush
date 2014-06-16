@@ -136,47 +136,42 @@ char *grepCMD(char *input, char *pipe_input) {
     return grep_string;
 }
 
+char *setOutput(char *string, int free_flag) {
+    char *output = (char*) malloc(sizeof(char) * (strlen(string) + 1));
+    strcpy(output, string);
+    
+    if (free_flag)
+        free(string);
+    
+    return output;
+}
+
 void parseInput(char *raw_input, char *pipe_input) {
     char *input;
+    char *output = NULL;
     char cmd[256];
-    
-    char *output = (char*) malloc(sizeof(char));
-    strcpy(output, "");
     
     input = trimWS(raw_input);
     input = extractCommand(cmd, input);
     
     if (!strcmp(cmd, "date")) {
         if (strlen(input) && input[0] != 124) {
-            output = (char*) realloc(output, sizeof(char) * 19);
-            strcat(output, "invalid arguments");
-            //strcpy(time_string, "invalid arguments");
+            output = setOutput("invalid arguments\n", 0);
         } else {
-            char *date_string = dateCMD();
-            output = (char*) realloc(output, sizeof(char) * strlen(date_string));
-            strcat(output, date_string);
-            free(date_string);
+            output = setOutput(dateCMD(), 1);
         }
     } else if (!strcmp(cmd, "echo")) {
-        puts(input);
+        output = setOutput(strcat(input, "\n"), 0);
     } else if (!strcmp(cmd, "ls")) {
         if (strlen(input) && input[0] != 124) {
-            output = (char*) realloc(output, sizeof(char) * 19);
-            strcat(output, "invalid arguments");
-            //strcpy(time_string, "invalid arguments");
+            output = setOutput("invalid arguments\n", 0);
         } else {
-            char *ls_string = lsCMD();
-            output = (char*) realloc(output, sizeof(char) * strlen(ls_string));
-            strcat(output, ls_string);
-            free(ls_string);
+            output = setOutput(lsCMD(), 1);
         }
     } else if (!strcmp(cmd, "cd")) {
         chdir(input);
     } else if (!strcmp(cmd, "grep")) {
-        char *grep_string = grepCMD(input, pipe_input);
-        output = (char*) realloc(output, sizeof(char) * strlen(grep_string));
-        strcat(output, grep_string);
-        free(grep_string);
+        output = setOutput(grepCMD(input, pipe_input), 1);
     } else if (!strcmp(cmd, "exit")) {
         fclose(stdin);
         fclose(stdout);
