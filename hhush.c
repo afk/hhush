@@ -49,14 +49,14 @@ char *dateCMD() {
     strftime(temp, 30, "%c", timeinfo);
     strcat(temp, "\n");
     
-    char *time_string = (char*) malloc(sizeof(char) * (strlen(temp) + 1));
+    char *time_string = malloc(strlen(temp) + 1);
     strcpy(time_string, temp);
     
     return time_string;
 }
 
 char *lsCMD() {
-    char *ls_string = (char*) malloc(sizeof(char));
+    char *ls_string = malloc(1);
     strcpy(ls_string, "");
     
     DIR *dirp = opendir(".");
@@ -66,7 +66,7 @@ char *lsCMD() {
         if (file->d_name[0] == 46)
             continue;
         
-        ls_string = (char*) realloc(ls_string, sizeof(file->d_name));
+        ls_string = realloc(ls_string, sizeof(file->d_name));
         strcat(ls_string, file->d_name);
         strcat(ls_string, "\n");
     }
@@ -77,7 +77,7 @@ char *lsCMD() {
 }
 
 char *grepCMD(char *input, char *pipe_input) {
-    char *grep_string = (char*) malloc(sizeof(char));
+    char *grep_string = malloc(1);
     strcpy(grep_string, "");
     
     if (strlen(input)) {
@@ -86,7 +86,7 @@ char *grepCMD(char *input, char *pipe_input) {
         
         if (pipe_input) {
             if (pattern && file) {
-                grep_string = (char*) realloc(grep_string, 19);
+                grep_string = realloc(grep_string, 19);
                 strcpy(grep_string, "invalid arguments\n");
             } else {
                 char temp[512];
@@ -97,7 +97,7 @@ char *grepCMD(char *input, char *pipe_input) {
                     strcat(temp, "\n");
                     
                     if (strstr(temp, input)) {
-                        grep_string = (char*) realloc(grep_string, sizeof(char) * strlen(temp));
+                        grep_string = realloc(grep_string, strlen(temp) + 1);
                         strcat(grep_string, temp);
                     }
                     ptr += strlen(temp);
@@ -108,14 +108,14 @@ char *grepCMD(char *input, char *pipe_input) {
                 FILE *filep = fopen(file, "r");
                 
                 if (filep == NULL) {
-                    grep_string = (char*) realloc(grep_string, 27);
+                    grep_string = realloc(grep_string, 27);
                     strcpy(grep_string, "no such file or directory\n");
                 } else {
                     char temp[512];
                     
                     while (fgets(temp, 512, filep)) {
                         if (strstr(temp, pattern)) {
-                            grep_string = (char*) realloc(grep_string, sizeof(temp));
+                            grep_string = realloc(grep_string, sizeof(temp));
                             strcat(grep_string, temp);
                         }
                     }
@@ -123,12 +123,12 @@ char *grepCMD(char *input, char *pipe_input) {
                     fclose(filep);
                 }
             } else {
-                grep_string = (char*) realloc(grep_string, 19);
+                grep_string = realloc(grep_string, 19);
                 strcpy(grep_string, "invalid arguments\n");
             }
         }
     } else {
-        grep_string = (char*) realloc(grep_string, 19);
+        grep_string = realloc(grep_string, 19);
         strcpy(grep_string, "invalid arguments\n");
     }
     
@@ -136,7 +136,7 @@ char *grepCMD(char *input, char *pipe_input) {
 }
 
 char *setOutput(char *string, int free_flag) {
-    char *output = (char*) malloc(sizeof(char) * (strlen(string) + 1));
+    char *output = malloc(strlen(string) + 1);
     strcpy(output, string);
     
     if (free_flag)
