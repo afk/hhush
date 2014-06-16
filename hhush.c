@@ -40,7 +40,7 @@ char *extractCommand(char *cmd, char *input) {
     return input;
 }
 
-char *dateCMD() {
+char *dateCMD() {  
     time_t rawtime;
     struct tm *timeinfo;
     
@@ -49,10 +49,10 @@ char *dateCMD() {
     
     char temp[30];
     strftime(temp, 30, "%c", timeinfo);
+    strcat(temp, "\n");
     
-    char *time_string = (char*) malloc(sizeof(char) * strlen(temp));
-    strcat(time_string, temp);
-    strcat(time_string, "\n");
+    char *time_string = (char*) malloc(sizeof(char) * (strlen(temp) + 1));
+    strcpy(time_string, temp);
     
     return time_string;
 }
