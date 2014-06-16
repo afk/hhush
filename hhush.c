@@ -6,27 +6,25 @@
 #include <time.h>
 #include <dirent.h>
 
-char *trimWS(char *string) {
-    char *end;
-    end = string + strlen(string) - 1;
+char *trimWS(char *raw_input) {
+    char *end = raw_input + strlen(raw_input) - 1;
     
-    while (isspace(*string)) string++;
+    while (isspace(*raw_input)) raw_input++;
     
-    if (*string == 0)
-        return string;
+    if (*raw_input == 0)
+        return raw_input;
     
-    while (end > string && isspace(*end)) end--;
+    while (end > raw_input && isspace(*end)) end--;
     
     *(end + 1) = 0;
     
-    return string;
+    return raw_input;
 }
 
 char *extractCommand(char *cmd, char *input) {
-    memcpy(cmd, input, strlen(input)+1);
-    int i;
+    memcpy(cmd, input, strlen(input) + 1);
+    int i = 0;
     
-    i = 0;
     while (!isspace(*(input + i)) && *(input + i) != 124 && *(input + i) != 0) i++;
     
     *(cmd + i) = 0;
