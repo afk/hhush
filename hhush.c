@@ -91,9 +91,17 @@ char *grepCMD(char *input, char *pipe_input) {
                 grep_string = (char*) realloc(grep_string, 19);
                 strcpy(grep_string, "invalid arguments\n");
             } else {
-                if (strstr(pipe_input, input)) {
-                    grep_string = (char*) realloc(grep_string, sizeof(char) * strlen(pipe_input));
-                    strcat(grep_string, pipe_input);
+                char temp[512];
+                char *ptr = pipe_input;
+                
+                while (*ptr != 0) {
+                    sscanf (ptr, "%s\n", temp);
+                    strcat(temp, "\n");
+                    if (strstr(temp, input)) {
+                        grep_string = (char*) realloc(grep_string, sizeof(char) * strlen(temp));
+                        strcat(grep_string, temp);
+                    }
+                    ptr += strlen(temp);
                 }
             }
         } else {
