@@ -97,7 +97,7 @@ char *grepCMD(char *input, char *pipe_input) {
                     strcat(temp, "\n");
                     
                     if (strstr(temp, input)) {
-                        grep_string = realloc(grep_string, strlen(temp) + 1);
+                        grep_string = realloc(grep_string, strlen(grep_string) + strlen(temp) + 1);
                         strcat(grep_string, temp);
                     }
                     ptr += strlen(temp);
@@ -115,7 +115,7 @@ char *grepCMD(char *input, char *pipe_input) {
                     
                     while (fgets(temp, 512, filep)) {
                         if (strstr(temp, pattern)) {
-                            grep_string = realloc(grep_string, sizeof(temp));
+                            grep_string = realloc(grep_string, strlen(grep_string) + strlen(temp) + 1);
                             strcat(grep_string, temp);
                         }
                     }
