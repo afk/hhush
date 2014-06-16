@@ -93,8 +93,9 @@ char *grepCMD(char *input, char *pipe_input) {
                 char *ptr = pipe_input;
                 
                 while (*ptr != 0) {
-                    sscanf (ptr, "%s\n", temp);
+                    sscanf(ptr, "%[^\n]\n", temp);
                     strcat(temp, "\n");
+                    
                     if (strstr(temp, input)) {
                         grep_string = (char*) realloc(grep_string, sizeof(char) * strlen(temp));
                         strcat(grep_string, temp);
