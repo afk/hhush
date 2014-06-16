@@ -190,7 +190,7 @@ void parseInput(char *raw_input, char *pipe_input) {
     
     if (prepare_pipe) {
         parseInput(++pipe, output);
-    } else {
+    } else if (output) {
         printf("%s", output);
     }
     
