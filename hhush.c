@@ -177,7 +177,7 @@ void parseInput(char *pipe_input) {
             dateCMD();
         }
     } else if (!strcmp(cmd, "echo")) {
-        output = realloc(output, strlen(output) + strlen(params) + 1);
+        output = realloc(output, strlen(output) + strlen(params) + 2);
         strcat(output, params);
         strcat(output, "\n");
     } else if (!strcmp(cmd, "ls")) {
@@ -191,6 +191,7 @@ void parseInput(char *pipe_input) {
     } else if (!strcmp(cmd, "grep")) {
         grepCMD(pipe_input);
     } else if (!strcmp(cmd, "exit")) {
+        clearHistory();
         fclose(stdin);
         fclose(stdout);
         fclose(stderr);
