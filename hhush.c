@@ -192,6 +192,7 @@ void parseInput(char *pipe_input) {
         grepCMD(pipe_input);
     } else if (!strcmp(cmd, "exit")) {
         clearHistory();
+        free(output);
         fclose(stdin);
         fclose(stdout);
         fclose(stderr);
