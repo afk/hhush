@@ -207,10 +207,10 @@ void parseInput(char *pipe_input) {
         parseInput(output);
     } else if (output) {
         printf("%s", output);
+        free(output);
     }
     
     free(pipe_input);
-    free(output);
 }
 
 int main() {
