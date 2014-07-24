@@ -6,39 +6,67 @@
 #include <time.h>
 #include <dirent.h>
 
-char *trimWS(char *raw_input) {
-    char *end = raw_input + strlen(raw_input) - 1;
+char *input = NULL;
+char *cmd = NULL;
+char *params = NULL;
+char *output = NULL;
+char **history = NULL;
+int hist_length = 0;
+
+char *trimWS(char *ptr) {
+    char *end = ptr + strlen(ptr) - 1;
     
-    while (isspace(*raw_input)) raw_input++;
+    while (isspace(*ptr)) ptr++;
     
-    if (*raw_input == 0)
-        return raw_input;
+    if (*ptr != 0) {
+        while (end > ptr && isspace(*end)) end--;
+        *(end + 1) = 0;
+    }
     
-    while (end > raw_input && isspace(*end)) end--;
-    
-    *(end + 1) = 0;
-    
-    return raw_input;
+    return ptr;
 }
 
-char *extractCommand(char *cmd, char *input) {
+void extractCommand() {
     memcpy(cmd, input, strlen(input) + 1);
+    memcpy(params, input, strlen(input) + 1);
     int i = 0;
     
-    while (!isspace(*(input + i)) && *(input + i) != 124 && *(input + i) != 0) i++;
+    while (!isspace(*(cmd + i)) && *(cmd + i) != 124 && *(cmd + i) != 0) i++;
     
     *(cmd + i) = 0;
     
     if (strlen(cmd) == strlen(input)) {
-        *input = 0;
+        *params = 0;
     } else {
-        input += ++i;
+        params += ++i;
     }
-
-    return input;
 }
 
-char *dateCMD() {  
+void pushHistory(char *input) {
+    char *ptr = malloc(strlen(input) + 1);
+    strcpy(ptr, input);
+    
+    history = realloc(history, (hist_length + 1) * sizeof(char *));
+    history[hist_length] = ptr;
+    
+    hist_length++;
+}
+
+void clearHistory() {
+    for (int i = 0; i < hist_length; i++) {
+        free(history[i]);
+    }
+    
+    free(history);
+    hist_length = 0;
+}
+
+void invalidArguments() {
+    output = realloc(output, 19);
+    strcpy(output, "invalid arguments\n");
+}
+
+void dateCMD() {
     time_t rawtime;
     struct tm *timeinfo;
     
@@ -49,16 +77,11 @@ char *dateCMD() {
     strftime(temp, 30, "%c", timeinfo);
     strcat(temp, "\n");
     
-    char *time_string = malloc(strlen(temp) + 1);
-    strcpy(time_string, temp);
-    
-    return time_string;
+    output = realloc(output, strlen(output) + strlen(temp) + 1);
+    strcat(output, temp);
 }
 
-char *lsCMD() {
-    char *ls_string = malloc(1);
-    strcpy(ls_string, "");
-    
+void lsCMD() {
     DIR *dirp = opendir(".");
     struct dirent *file;
     
@@ -66,28 +89,23 @@ char *lsCMD() {
         if (file->d_name[0] == 46)
             continue;
         
-        ls_string = realloc(ls_string, sizeof(file->d_name));
-        strcat(ls_string, file->d_name);
-        strcat(ls_string, "\n");
+        output = realloc(output, strlen(output) + strlen(file->d_name) + 2);
+        //ls_string = realloc(ls_string, strlen(output) + sizeof(file->d_name));
+        strcat(output, file->d_name);
+        strcat(output, "\n");
     }
     
     closedir(dirp);
-
-    return ls_string;
 }
 
-char *grepCMD(char *input, char *pipe_input) {
-    char *grep_string = malloc(1);
-    strcpy(grep_string, "");
-    
-    if (strlen(input)) {
-        char *pattern = strtok(input, " ");
+void grepCMD(char *pipe_input) {
+    if (strlen(params)) {
+        char *pattern = strtok(params, " ");
         char *file = strtok(NULL, " ");
         
         if (pipe_input) {
             if (pattern && file) {
-                grep_string = realloc(grep_string, 19);
-                strcpy(grep_string, "invalid arguments\n");
+                invalidArguments();
             } else {
                 char temp[512];
                 char *ptr = pipe_input;
@@ -96,9 +114,9 @@ char *grepCMD(char *input, char *pipe_input) {
                     sscanf(ptr, "%[^\n]\n", temp);
                     strcat(temp, "\n");
                     
-                    if (strstr(temp, input)) {
-                        grep_string = realloc(grep_string, strlen(grep_string) + strlen(temp) + 1);
-                        strcat(grep_string, temp);
+                    if (strstr(temp, params)) {
+                        output = realloc(output, strlen(output) + strlen(temp) + 1);
+                        strcat(output, temp);
                     }
                     ptr += strlen(temp);
                 }
@@ -108,76 +126,70 @@ char *grepCMD(char *input, char *pipe_input) {
                 FILE *filep = fopen(file, "r");
                 
                 if (filep == NULL) {
-                    grep_string = realloc(grep_string, 27);
-                    strcpy(grep_string, "no such file or directory\n");
+                    output = realloc(output, 27);
+                    strcpy(output, "no such file or directory\n");
                 } else {
                     char temp[512];
                     
                     while (fgets(temp, 512, filep)) {
                         if (strstr(temp, pattern)) {
-                            grep_string = realloc(grep_string, strlen(grep_string) + strlen(temp) + 1);
-                            strcat(grep_string, temp);
+                            output = realloc(output, strlen(output) + strlen(temp) + 1);
+                            strcat(output, temp);
                         }
                     }
                     
                     fclose(filep);
                 }
             } else {
-                grep_string = realloc(grep_string, 19);
-                strcpy(grep_string, "invalid arguments\n");
+                invalidArguments();
             }
         }
     } else {
-        grep_string = realloc(grep_string, 19);
-        strcpy(grep_string, "invalid arguments\n");
+        invalidArguments();
     }
-    
-    return grep_string;
 }
 
-char *setOutput(char *string, int free_flag) {
-    char *output = malloc(strlen(string) + 1);
-    strcpy(output, string);
-    
-    if (free_flag)
-        free(string);
-    
-    return output;
+void historyCMD() {
+    for (int i = 0; i < hist_length; i++) {
+        printf("%i %s\n", i, history[i]);
+    }
 }
 
-void parseInput(char *raw_input, char *pipe_input) {
-    char *input = trimWS(raw_input);
-    char *output = NULL;
-    char cmd[256];
-    char *pipe;
-    int prepare_pipe = 0;
+void parseInput(char *pipe_input) {
+    char *pipe = NULL;
     
-    input = extractCommand(cmd, input);
+    output = malloc(1);
+    *output = 0;
     
-    if ((pipe = strstr(input, "|"))) {
-        prepare_pipe = 1;
+    extractCommand();
+    params = trimWS(params);
+    
+    if ((pipe = strstr(params, "|"))) {
         *pipe = 0;
+        pipe++;
+        pipe = trimWS(pipe);
     }
-    input = trimWS(input);
     
     if (!strcmp(cmd, "date")) {
-        if (strlen(input) && !prepare_pipe) {
-            output = setOutput("invalid arguments\n", 0);
+        if (strlen(params) && !pipe) {
+            invalidArguments();
         } else {
-            output = setOutput(dateCMD(), 1);
+            dateCMD();
         }
     } else if (!strcmp(cmd, "echo")) {
-        output = setOutput(strcat(input, "\n"), 0);
+        output = realloc(output, strlen(output) + strlen(params) + 1);
+        strcat(output, params);
+        strcat(output, "\n");
     } else if (!strcmp(cmd, "ls")) {
-        if (strlen(input) && !prepare_pipe) {
-            output = setOutput("invalid arguments\n", 0);
+        if (strlen(params) && !pipe) {
+            invalidArguments();
         } else {
-            output = setOutput(lsCMD(), 1);
+            lsCMD();
         }
     } else if (!strcmp(cmd, "cd")) {
-        chdir(input);
+        chdir(params);
     } else if (!strcmp(cmd, "grep")) {
-        output = setOutput(grepCMD(input, pipe_input), 1);
+        grepCMD(pipe_input);
     } else if (!strcmp(cmd, "exit")) {
         fclose(stdin);
         fclose(stdout);
@@ -186,27 +198,40 @@ void parseInput(char *raw_input, char *pipe_input) {
     } else {
         if (strlen(cmd))
             puts("command not found");
+        pipe = NULL;
     }
     
-    if (prepare_pipe) {
-        parseInput(++pipe, output);
+    if (pipe) {
+        input = pipe;
+        parseInput(output);
     } else if (output) {
         printf("%s", output);
     }
     
+    free(pipe_input);
     free(output);
 }
 
 int main() {
     char raw_input[256];
+    char raw_cmd[256];
+    char raw_params[256];
     char cwd[1024];
     
     if (getcwd(cwd, sizeof(cwd)) != NULL)
         printf("%s $ ", cwd);
     
     while (1) {
+        input = raw_input;
+        cmd = raw_cmd;
+        params = raw_params;
+        
         fgets(raw_input, sizeof(raw_input), stdin);
-        parseInput(raw_input, NULL);
+        input = trimWS(input);
+        
+        pushHistory(input);
+        
+        parseInput(NULL);
         
         if (getcwd(cwd, sizeof(cwd)) != NULL)
             printf("%s $ ", cwd);
