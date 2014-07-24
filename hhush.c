@@ -27,8 +27,8 @@ char *trimWS(char *ptr) {
 }
 
 void extractCommand() {
-    memcpy(cmd, input, strlen(input) + 1);
-    memcpy(params, input, strlen(input) + 1);
+    strcpy(cmd, input);
+    strcpy(params, input);
     int i = 0;
     
     while (!isspace(*(cmd + i)) && *(cmd + i) != 124 && *(cmd + i) != 0) i++;
