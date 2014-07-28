@@ -58,6 +58,7 @@ void clearHistory() {
     }
     
     free(history);
+    history = NULL;
     hist_length = 0;
 }
 
@@ -150,8 +151,27 @@ void grepCMD(char *pipe_input) {
 }
 
 void historyCMD() {
-    for (int i = 0; i < hist_length; i++) {
-        printf("%i %s\n", i, history[i]);
+    char temp[265];
+    
+    if (strlen(params)) {
+        if (strcmp(params, "-c") == 0) {
+            clearHistory();
+        } else if (isdigit(params[0])) {
+            for (int i = hist_length - atoi(params); i < hist_length; i++) {
+                sprintf(temp, "%i %s\n", i, history[i]);
+                output = realloc(output, strlen(output) + strlen(temp) + 1);
+                strcat(output, temp);
+            }
+        } else {
+            invalidArguments();
+        }
+    } else {
+        for (int i = 0; i < hist_length; i++) {
+            //printf("%i %s\n", i, history[i]);
+            sprintf(temp, "%i %s\n", i, history[i]);
+            output = realloc(output, strlen(output) + strlen(temp) + 1);
+            strcat(output, temp);
+        }
     }
 }
 
@@ -190,6 +210,8 @@ void parseInput(char *pipe_input) {
         chdir(params);
     } else if (!strcmp(cmd, "grep")) {
         grepCMD(pipe_input);
+    } else if (!strcmp(cmd, "history")) {
+        historyCMD();
     } else if (!strcmp(cmd, "exit")) {
         clearHistory();
         free(output);
