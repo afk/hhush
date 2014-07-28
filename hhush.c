@@ -204,7 +204,7 @@ void parseInput(char *pipe_input) {
     }
     
     if (pipe) {
-        input = pipe;
+        strcpy(input, pipe);
         parseInput(output);
     } else if (output) {
         printf("%s", output);
