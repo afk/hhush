@@ -99,6 +99,29 @@ void lsCMD() {
     closedir(dirp);
 }
 
+void cdCMD() {
+    if (!strlen(params)) {
+        invalidArguments();
+    } else {
+        int i = 0;
+        int contains_ws = 0;
+        
+        while (params[i]) {
+            if (isspace(params[i])) contains_ws = 1;
+            i++;
+        }
+        
+        if (contains_ws) {
+            invalidArguments();
+        } else {
+            if (chdir(params) == -1) {
+                output = realloc(output, 27);
+                strcpy(output, "no such file or directory\n");
+            }
+        }
+    }
+}
+
 void grepCMD(char *pipe_input) {
     if (strlen(params)) {
         char *pattern = strtok(params, " ");
@@ -220,10 +243,7 @@ void parseInput(char *pipe_input) {
             lsCMD();
         }
     } else if (!strcmp(cmd, "cd")) {
-        if (chdir(params) == -1) {
-            output = realloc(output, 27);
-            strcpy(output, "no such file or directory\n");
-        }
+        cdCMD();
     } else if (!strcmp(cmd, "grep")) {
         grepCMD(pipe_input);
     } else if (!strcmp(cmd, "history")) {
