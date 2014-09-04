@@ -232,9 +232,9 @@ void parseInput(char *pipe_input) {
                 sprintf(temp, "%s\n", history[i]);
                 fputs(temp, filep);
             }
+            
+            fclose(filep);
         }
-        
-        fclose(filep);
         
         clearHistory();
         
@@ -276,9 +276,9 @@ int main() {
         while (fgets(temp, 256, filep)) {
             pushHistory(trimWS(temp));
         }
+        
+        fclose(filep);
     }
-    
-    fclose(filep);
     
     if (getcwd(cwd, sizeof(cwd)) != NULL)
         printf("%s $ ", cwd);
