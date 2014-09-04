@@ -154,9 +154,17 @@ void historyCMD() {
     char temp[265];
     
     if (strlen(params)) {
+        int i = 0;
+        int contains_ws = 0;
+        
+        while (params[i]) {
+            if (isspace(params[i])) contains_ws = 1;
+            i++;
+        }
+        
         if (strcmp(params, "-c") == 0) {
             clearHistory();
-        } else if (isdigit(params[0]) && atoi(params) > 0) {
+        } else if (isdigit(params[0]) && atoi(params) > 0 && !contains_ws) {
             int steps = atoi(params);
             
             if (steps > hist_length) {
