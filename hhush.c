@@ -167,7 +167,6 @@ void historyCMD() {
         }
     } else {
         for (int i = 0; i < hist_length; i++) {
-            //printf("%i %s\n", i, history[i]);
             sprintf(temp, "%i %s\n", i, history[i]);
             output = realloc(output, strlen(output) + strlen(temp) + 1);
             strcat(output, temp);
@@ -213,11 +212,32 @@ void parseInput(char *pipe_input) {
     } else if (!strcmp(cmd, "history")) {
         historyCMD();
     } else if (!strcmp(cmd, "exit")) {
+        char temp[265];
+        FILE *filep = fopen(".hhush.histfile", "w");
+        
+        if (filep != NULL) {
+            int start = 0;
+            
+            if (hist_length > 1000) {
+                start = hist_length - 1000;
+            }
+            
+            for (int i = start; i < hist_length; i++) {
+                sprintf(temp, "%s\n", history[i]);
+                fputs(temp, filep);
+            }
+        }
+        
+        fclose(filep);
+        
         clearHistory();
+        
         free(output);
+        
         fclose(stdin);
         fclose(stdout);
         fclose(stderr);
+        
         exit(0);
     } else {
         if (strlen(cmd))
@@ -241,6 +261,18 @@ int main() {
     char raw_cmd[256];
     char raw_params[256];
     char cwd[1024];
+    
+    FILE *filep = fopen(".hhush.histfile", "r");
+    
+    if (filep != NULL) {
+        char temp[256];
+        
+        while (fgets(temp, 256, filep)) {
+            pushHistory(trimWS(temp));
+        }
+    }
+    
+    fclose(filep);
     
     if (getcwd(cwd, sizeof(cwd)) != NULL)
         printf("%s $ ", cwd);
