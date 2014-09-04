@@ -156,8 +156,14 @@ void historyCMD() {
     if (strlen(params)) {
         if (strcmp(params, "-c") == 0) {
             clearHistory();
-        } else if (isdigit(params[0])) {
-            for (int i = hist_length - atoi(params); i < hist_length; i++) {
+        } else if (isdigit(params[0]) && atoi(params) > 0) {
+            int steps = atoi(params);
+            
+            if (steps > hist_length) {
+                steps = hist_length;
+            }
+            
+            for (int i = hist_length - steps; i < hist_length; i++) {
                 sprintf(temp, "%i %s\n", i, history[i]);
                 output = realloc(output, strlen(output) + strlen(temp) + 1);
                 strcat(output, temp);
