@@ -220,7 +220,10 @@ void parseInput(char *pipe_input) {
             lsCMD();
         }
     } else if (!strcmp(cmd, "cd")) {
-        chdir(params);
+        if (chdir(params) == -1) {
+            output = realloc(output, 27);
+            strcpy(output, "no such file or directory\n");
+        }
     } else if (!strcmp(cmd, "grep")) {
         grepCMD(pipe_input);
     } else if (!strcmp(cmd, "history")) {
