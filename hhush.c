@@ -218,7 +218,6 @@ void parseInput(char *pipe_input) {
     *output = 0;
     
     extractCommand();
-    params = trimWS(params);
     
     if ((pipe = strstr(params, "|"))) {
         *pipe = 0;
@@ -226,6 +225,8 @@ void parseInput(char *pipe_input) {
         pipe = trimWS(pipe);
     }
     
+    params = trimWS(params);
+          
     if (!strcmp(cmd, "date")) {
         if (strlen(params) && !pipe) {
             invalidArguments();
