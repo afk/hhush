@@ -226,6 +226,27 @@ void parseInput(char *pipe_input) {
     }
     
     params = trimWS(params);
+    
+    char params_clean[256];
+    char *ptr = params_clean;
+    strcpy(params_clean, params);
+    int length = strlen(params);
+    
+    while (*ptr != 0) {
+        if (isspace(*ptr)) *ptr = 0;
+        ptr++;
+    }
+    
+    strcpy(params, params_clean);
+    
+    for (int i = 0; i < length; i++) {
+        if (params_clean[i] == 0) {
+            strcat(params, " ");
+            i++;
+            while (params_clean[i] == 0) i++;
+            strcat(params, &params_clean[i]);
+        }
+    }
           
     if (!strcmp(cmd, "date")) {
         if (strlen(params) && !pipe) {
