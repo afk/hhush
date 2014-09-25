@@ -13,6 +13,9 @@ char *output = NULL;
 char **history = NULL;
 int hist_length = 0;
 
+/*
+ * Cuts of leading and trailing WS
+ */
 char *trimWS(char *ptr) {
     char *end = ptr + strlen(ptr) - 1;
     
@@ -26,6 +29,9 @@ char *trimWS(char *ptr) {
     return ptr;
 }
 
+/*
+ * Seperates the command from it's parameters
+ */
 void extractCommand() {
     strcpy(cmd, input);
     strcpy(params, input);
@@ -42,6 +48,9 @@ void extractCommand() {
     }
 }
 
+/*
+ * Adds the given string to the history-stack
+ */
 void pushHistory(char *input) {
     char *ptr = malloc(strlen(input) + 1);
     strcpy(ptr, input);
@@ -52,6 +61,9 @@ void pushHistory(char *input) {
     hist_length++;
 }
 
+/*
+ * Clears the hole history-stack
+ */
 void clearHistory() {
     for (int i = 0; i < hist_length; i++) {
         free(history[i]);
@@ -62,11 +74,17 @@ void clearHistory() {
     hist_length = 0;
 }
 
+/*
+ * Sets output for invalid arguments
+ */
 void invalidArguments() {
     output = realloc(output, 19);
     strcpy(output, "invalid arguments\n");
 }
 
+/*
+ * Implements the "date"-command
+ */
 void dateCMD() {
     time_t rawtime;
     struct tm *timeinfo;
@@ -82,6 +100,9 @@ void dateCMD() {
     strcat(output, temp);
 }
 
+/*
+ * Implements the "ls"-command
+ */
 void lsCMD() {
     DIR *dirp = opendir(".");
     struct dirent *file;
@@ -91,7 +112,6 @@ void lsCMD() {
             continue;
         
         output = realloc(output, strlen(output) + strlen(file->d_name) + 2);
-        //ls_string = realloc(ls_string, strlen(output) + sizeof(file->d_name));
         strcat(output, file->d_name);
         strcat(output, "\n");
     }
@@ -99,6 +119,9 @@ void lsCMD() {
     closedir(dirp);
 }
 
+/*
+ * Implements the "cd DIR"-command
+ */
 void cdCMD() {
     if (!strlen(params)) {
         invalidArguments();
@@ -122,6 +145,9 @@ void cdCMD() {
     }
 }
 
+/*
+ * Implements the "grep PATTERN [FILE]"-command
+ */
 void grepCMD(char *pipe_input) {
     if (strlen(params)) {
         char *pattern = strtok(params, " ");
@@ -173,6 +199,9 @@ void grepCMD(char *pipe_input) {
     }
 }
 
+/*
+ * Implements the "history [-c] [n]"-command
+ */
 void historyCMD() {
     char temp[265];
     
@@ -211,6 +240,13 @@ void historyCMD() {
     }
 }
 
+/*
+ * Parses the commandline-input:
+ * - checks for pipes
+ * - cleans the params from redundant WS
+ * - determines which command should be executed
+ * - handles the output
+ */
 void parseInput(char *pipe_input) {
     char *pipe = NULL;
     
